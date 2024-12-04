@@ -3,3 +3,7 @@ __pychache__/
 *.pyc
 *.pyo
 instance/
+node_modules
+build/
+*.log
+*.cache

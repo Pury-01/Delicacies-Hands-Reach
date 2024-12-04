@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
 """home route"""
-from flask import Blueprint
+from flask import Blueprint, send_from_directory
 
 
-bp = Blueprint("main", __name__)
+bp = Blueprint("main", __name__, static_folder='../frontend/build', static_url_path='/')
 
-@bp.route("/")
-def home():
-    return "Welcome to Delicacies@Hands-Reach"
+
+# serve react build files
+@bp.route("/", methods=['GET'])
+def Serve_react_app():
+    """serve the React app's index.html for the root route.
+    """
+    return send_from_directory(bp.static_folder, 'index.html')
