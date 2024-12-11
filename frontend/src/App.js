@@ -2,15 +2,21 @@ import React, { useState } from 'react';
 import SearchBar from './components/SearchBar';
 
 function App() {
-  // state for holding search query and result
+  // state for storing recipes, query and result
   const [recipes, setRecipes] = useState([]);
 
   // handle search query and fetch recipes
-  const handleSearch = (query) => {
-    // test query
-    console.log('Recipes for ingredients:', query);
-    // placeholder for data to be fetched
-    setRecipes([]);
+  const handleSearch = async (query) => {
+    try {
+      // send request to the backend
+      const response = await fetch(`/api/recipes?query=${query}`);
+      // store the fetched data in json format
+      const data = await response.json();
+      // update the fetched recipes
+      setRecipes(data);
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
+    }
   };
   
   return (
