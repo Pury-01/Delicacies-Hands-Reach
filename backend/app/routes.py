@@ -3,6 +3,7 @@
 from flask import Blueprint, send_from_directory, jsonify, request
 import requests
 from dotenv import load_dotenv
+import db
 
 # Load environment variables
 load_dotenv()
@@ -61,3 +62,11 @@ def get_recipes():
         return jsonify(recipes)
     except requests.exceptions.RequestException as e:
         return jsonify({"error": str(e)}), 500
+
+
+@bp.route("/api/save", methods=['POST'])
+def save_recipe():
+    """Endpoint to save a recipe to the database."""
+    saved_recipe = {}
+    db.session.add(saved_recipe)
+    db.session.commit()
