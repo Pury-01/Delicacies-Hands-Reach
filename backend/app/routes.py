@@ -2,8 +2,9 @@
 """API endpoints"""
 from flask import Blueprint, send_from_directory, jsonify, request
 import requests
+import os
 from dotenv import load_dotenv
-import db
+from . import db
 
 # Load environment variables
 load_dotenv()
@@ -25,7 +26,7 @@ def get_recipes():
     # fetch the query parameter from the request
     ingredients = request.args.get('ingredients', '')
     
-    API_KEY = "SPOONACULAR_API_KEY"
+    API_KEY = os.getenv('SPOONACULAR_API_KEY')
     find_recipe_url = "https://api.spoonacular.com/recipes/findByIngredients"
     # recipe_steps_url = "https://api.spoonacular.com/recipes/{id}/analyzedInstructions"
 

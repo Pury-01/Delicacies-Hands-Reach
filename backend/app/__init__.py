@@ -2,8 +2,8 @@
 """Initialize flask app"""
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from .routes import bp as main_bp
 import os
+from dotenv import load_dotenv
 from flask_migrate import Migrate
 
 
@@ -24,7 +24,7 @@ def create_app():
 
     # configure database
     app.config['SQLALCHEMY_DATABASE_URI'] = (
-        f"mysql+pmysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
+        f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
         f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
     )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -33,6 +33,8 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     
+    # register blueprint
+    from .routes import bp as main_bp
     app.register_blueprint(main_bp)
 
     return app
