@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """API endpoints"""
-from flask import Blueprint, send_from_directory, jsonify, request
+from flask import Blueprint, send_from_directory, jsonify, request, session
 import os
 import requests
 import asyncio
@@ -8,6 +8,8 @@ import aiohttp
 from dotenv import load_dotenv
 from . import db
 from .models import User
+from werkzeug.security import check_password_hash
+
 
 # Load environment variables
 load_dotenv()
@@ -85,7 +87,7 @@ def signup():
     """create new user"""
     # get data from the request
     data = request.get_json()
-    print(f"Recieved data: {data}")
+    # print(f"Recieved data: {data}")
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
@@ -106,10 +108,29 @@ def signup():
     # save the user to the database
     db.session.add(user)
     db.session.commit()
-    print("user saved to DB")
+    # print("user saved to DB")
 
     # return success message
     return jsonify({"message": "account created successsfuly"}), 201
+
+@bp.route("/login", methods=['POST'])
+def login():
+    """user login"""
+    # get data from request
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    # check if user exists
+    user = User.query.filter_by(username=username).first()
+
+    if user and check_password_hash(user.password_hash, password):
+        # store user ID in session to maintain login state
+        session['user_id'] = user.id
+        return jsonify({"message": "Login successful"}), 200
+
+    return jsonify({"error": "invalid username or password"}), 401 
+
 
 # route to save recipe for user
 @bp.route("/api/save_recipe", methods=['POST'])
