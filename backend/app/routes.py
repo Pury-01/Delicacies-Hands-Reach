@@ -7,6 +7,7 @@ import asyncio
 import aiohttp
 from dotenv import load_dotenv
 from . import db
+from .models import User
 
 # Load environment variables
 load_dotenv()
@@ -77,6 +78,38 @@ async def get_recipes():
         except requests.exceptions.RequestException as e:
             return jsonify({"error": str(e)}), 500
     return jsonify(recipes)        
+
+# route to handle user signup
+@bp.route("/signup", methods=['POST'])
+def signup():
+    """create new user"""
+    # get data from the request
+    data = request.get_json()
+    print(f"Recieved data: {data}")
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
+
+    # check if user already exists
+    if User.query.filter_by(username=username).first():
+        return jsonify({"error": "Username already exists"}), 400
+    
+    if User.query.filter_by(email=email).first():
+        return jsonify({"error": "Email is already registered"}), 400
+    
+    # create a new user object
+    user = User(username=username, email=email)
+
+    # hash and set password
+    user.set_password(password)
+
+    # save the user to the database
+    db.session.add(user)
+    db.session.commit()
+    print("user saved to DB")
+
+    # return success message
+    return jsonify({"message": "account created successsfuly"}), 201
 
 # route to save recipe for user
 @bp.route("/api/save_recipe", methods=['POST'])
