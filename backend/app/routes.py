@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """API endpoints"""
-from flask import Blueprint, send_from_directory, jsonify, request, session
+from flask import Blueprint, send_from_directory, jsonify, request, session, redirect, url_for
 import os
 import requests
 import asyncio
@@ -111,11 +111,17 @@ def signup():
     # print("user saved to DB")
 
     # return success message
-    return jsonify({"message": "account created successsfuly"}), 201
+    # return jsonify({"message": "account created successsfuly"}), 201
+    # redirect to login page after successful signup
+    return redirect(url_for('main.login')) 
 
 @bp.route("/login", methods=['POST'])
 def login():
     """user login"""
+    # if user is already logged in, redirect to the homepage
+    if session.het('user_id'):
+        return redirect(url_for("main.index"))
+    
     # get data from request
     data = request.get_json()
     username = data.get('username')
@@ -127,15 +133,22 @@ def login():
     if user and check_password_hash(user.password_hash, password):
         # store user ID in session to maintain login state
         session['user_id'] = user.id
-        return jsonify({"message": "Login successful"}), 200
+        return redirect(url_for("main.index"))
 
-    return jsonify({"error": "invalid username or password"}), 401 
+    return jsonify({
+        "error": "invalid username or password",
+        "Signup_url": url_for("main.signup")
+                    }), 401 
 
 
 # route to save recipe for user
 @bp.route("/api/save_recipe", methods=['POST'])
 def save_recipe():
     """Endpoint to save a recipe for a specific user."""
+    # redirect user to login page if not logged in
+    if not session.get('user_id'):
+        return redirect(url_for("main.login"))
+    
     # parse incoming Json request data and extract User Id and recipe ID
     data = request.get_json()
     user_id = data.get('user_id')
@@ -161,3 +174,10 @@ def get_saved_recipes():
         return jsonify(recipes), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+    
+# Logout endpoint
+@bp.route("/logout", methods=['POST'])
+def logout():
+    """Log out current user by clearing their session"""
+    session.clear()
+    return jsonify({"message": "Logged out successfully"}), 200
