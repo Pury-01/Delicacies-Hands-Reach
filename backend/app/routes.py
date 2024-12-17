@@ -45,7 +45,10 @@ def serve_static_file(path):
 async def get_recipes():
     """endpoint to fetch recipes from Spoonacular API"""
     # fetch the query parameter from the request
-    ingredients = request.args.get('ingredients', '')
+    ingredients = request.args.get('query', '')
+
+    # print stametent for debugging
+    print(f"Requested ingredients: {ingredients}")
     
     API_KEY = os.getenv('SPOONACULAR_API_KEY')
     find_recipe_url = "https://api.spoonacular.com/recipes/findByIngredients"
@@ -58,7 +61,7 @@ async def get_recipes():
         "number": 10
     }
     
-    # empty list to stre the recipes
+    # empty list to store the recipes
     recipes = []
 
     # perform http requests asyncronously
@@ -92,6 +95,8 @@ async def get_recipes():
                             ],
                             "steps":  [step['step'] for step in steps]
     })
+                    # print statement for debugging
+                    print(f"Recipes found: {recipes}")
             
         except requests.exceptions.RequestException as e:
             return jsonify({"error": str(e)}), 500

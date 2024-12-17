@@ -13,17 +13,20 @@ function SearchBar({ onSearch }) {
     };
     
     return (
+        <div className="form=group">
         <form onSubmit={handleSubmit}>
             <input
               type="text"
+              className="form-control"
               value={query}
               // update state as user inputs
               onChange={(e) => setQuery(e.target.value)}
               // placeholder message
-              placeholder="Input ingredients"
+              placeholder="Input ingredients to search..."
               />
-              <button type="submit">Search</button>
+              <button type="submit" className="btn btn-primary mt-3">Search</button>
         </form>
+        </div>
     );
 }
 

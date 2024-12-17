@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 from flask_migrate import Migrate
 from .config import Config
+from flask_cors import CORS
 
 
 # initialize SQLAlchemy
@@ -18,6 +19,9 @@ def create_app():
         Flask app instance
     """
     app = Flask(__name__, static_folder=os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static/static')) 
+    
+    # allow cross origin requests
+    CORS(app)
     
     # Load configuration
     app.config.from_object(Config)
