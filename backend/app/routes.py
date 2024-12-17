@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 """API endpoints"""
-from flask import Blueprint, send_from_directory, jsonify, request, session, redirect, url_for
+from flask import (
+    Blueprint,
+    send_from_directory, 
+    jsonify, 
+    request, 
+    session, 
+    redirect,
+    url_for,
+    current_app
+)
 import os
 import requests
 import asyncio
@@ -23,7 +32,14 @@ bp = Blueprint("main", __name__)
 def Serve_react_app():
     """serve the React app's index.html for the root route.
     """
-    return send_from_directory(bp.static_folder, 'index.html')
+    # return send_from_directory(bp.static_folder, 'index.html')
+    return send_from_directory(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static'), 'index.html')
+
+# route to serve any other static file requested
+@bp.route("/static/<path:path>")
+def serve_static_file(path):
+    """serve any other static file requested"""
+    return send_from_directory(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static', 'static'), path)
 
 @bp.route('/api/recipes', methods=['GET'])
 async def get_recipes():
@@ -119,8 +135,8 @@ def signup():
 def login():
     """user login"""
     # if user is already logged in, redirect to the homepage
-    if session.het('user_id'):
-        return redirect(url_for("main.index"))
+    if session.get('user_id'):
+        return redirect("/")
     
     # get data from request
     data = request.get_json()
@@ -133,7 +149,7 @@ def login():
     if user and check_password_hash(user.password_hash, password):
         # store user ID in session to maintain login state
         session['user_id'] = user.id
-        return redirect(url_for("main.index"))
+        return redirect("/")
 
     return jsonify({
         "error": "invalid username or password",

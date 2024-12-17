@@ -17,9 +17,8 @@ def create_app():
     Returns:
         Flask app instance
     """
-    app = Flask(__name__)
-
-
+    app = Flask(__name__, static_folder=os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static/static')) 
+    
     # Load configuration
     app.config.from_object(Config)
     
