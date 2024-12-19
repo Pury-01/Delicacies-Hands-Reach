@@ -46,10 +46,12 @@ async def get_recipes():
     """endpoint to fetch recipes from Spoonacular API"""
     # fetch the query parameter from the request
     ingredients = request.args.get('query', '')
-
-    # print stametent for debugging
-    print(f"Requested ingredients: {ingredients}")
+    # set default  page as page 1 with 10 recipes per page
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 10))
+    offset = (page - 1) * limit
     
+
     API_KEY = os.getenv('SPOONACULAR_API_KEY')
     find_recipe_url = "https://api.spoonacular.com/recipes/findByIngredients"
     
@@ -58,7 +60,8 @@ async def get_recipes():
     params = {
         "ingredients": ingredients,
         "apiKey": API_KEY,
-        "number": 10
+        "number": limit,
+        "offset": offset,
     }
     
     # empty list to store the recipes
@@ -90,17 +93,22 @@ async def get_recipes():
                     recipes.append({
                         "id": recipe.get('id'),
                         "name": recipe.get('title'),
+                        "image": recipe.get('image'),
                         "ingredients": [
-                            ingredient.get('name') for ingredient in recipe.get('usedIgredients', []) + recipe.get('missedIngredients', []) 
+                            ingredient.get('name') for ingredient in recipe.get('usedIngredients', []) + recipe.get('missedIngredients', []) 
                             ],
                             "steps":  [step['step'] for step in steps]
     })
                     # print statement for debugging
-                    print(f"Recipes found: {recipes}")
+                    # print(f"Recipes found: {recipes}")
             
         except requests.exceptions.RequestException as e:
             return jsonify({"error": str(e)}), 500
-    return jsonify(recipes)        
+    return jsonify({
+        "recipes": recipes,
+        "page": page,
+        "limit": limit
+        })
 
 # route to handle user signup
 @bp.route("/signup", methods=['POST'])
