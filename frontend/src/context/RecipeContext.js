@@ -34,7 +34,7 @@ export const RecipeProvider = ({ children}) => {
         // update the fetched recipes
         setRecipes(data.recipes);
         //check if it's the last page
-        setIsLastPage(data.length < limit);
+        setIsLastPage(data.recipes.length < limit);
 
         // mark search as performed
         setSearchPerformed(true);

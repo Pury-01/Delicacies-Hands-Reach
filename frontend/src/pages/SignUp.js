@@ -22,7 +22,7 @@ const  Signup = () => {
         // clear previous error message
         setErrorMessage('');
 
-        // Create the request payload
+        // Create the request
         const requestData = { username, email, password }
 
         try {

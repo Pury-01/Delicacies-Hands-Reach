@@ -48,7 +48,7 @@ async def get_recipes():
     ingredients = request.args.get('query', '')
     # set default  page as page 1 with 10 recipes per page
     page = int(request.args.get('page', 1))
-    limit = int(request.args.get('limit', 10))
+    limit = min(max(int(request.args.get('limit', 10)), 1), 100)
     offset = (page - 1) * limit
     
 
@@ -60,7 +60,7 @@ async def get_recipes():
     params = {
         "ingredients": ingredients,
         "apiKey": API_KEY,
-        "number": limit,
+        "number": 30,
         "offset": offset,
     }
     
@@ -142,30 +142,33 @@ def signup():
     # return success message
     # return jsonify({"message": "account created successsfuly"}), 201
     # redirect to login page after successful signup
-    return redirect(url_for('main.login')) 
+    return jsonify({
+        "message": "Account created successsfuly",
+        # "Login_url": url_for("main.login")
+                    }), 201
 
 @bp.route("/login", methods=['POST'])
 def login():
     """user login"""
     # if user is already logged in, redirect to the homepage
     if session.get('user_id'):
-        return redirect("/")
+        return jsonify({"message": "Already logged in", "redirect_url": "/"}), 200
     
     # get data from request
     data = request.get_json()
-    username = data.get('username')
+    email = data.get('email')
     password = data.get('password')
 
     # check if user exists
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter_by(email=email).first()
 
     if user and check_password_hash(user.password_hash, password):
         # store user ID in session to maintain login state
         session['user_id'] = user.id
-        return redirect("/")
+        return jsonify({"message": "Login successful", "redirect_url": "/"}), 200
 
     return jsonify({
-        "error": "invalid username or password",
+        "error": "invalid email or password",
         "Signup_url": url_for("main.signup")
                     }), 401 
 
