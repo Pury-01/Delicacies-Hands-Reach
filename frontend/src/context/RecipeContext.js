@@ -17,6 +17,9 @@ export const RecipeProvider = ({ children}) => {
     // handle search query and fetch recipes
     const handleSearch = async (newQuery = query, page = currentPage, limit = 10) => {
       try {
+        // set query set if new query is provided
+        if (newQuery !== query) setQuery(newQuery);
+        
         // send request to the backend
         const response = await fetch(
           `${process.env.REACT_APP_API_URL}/api/recipes?query=${newQuery}&page=${page}&limit=${limit}`

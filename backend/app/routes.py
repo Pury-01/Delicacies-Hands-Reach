@@ -60,7 +60,7 @@ async def get_recipes():
     params = {
         "ingredients": ingredients,
         "apiKey": API_KEY,
-        "number": 30,
+        "number": limit,
         "offset": offset,
     }
     
