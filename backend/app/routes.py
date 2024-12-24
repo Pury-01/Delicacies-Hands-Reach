@@ -16,7 +16,7 @@ import asyncio
 import aiohttp
 from dotenv import load_dotenv
 from . import db
-from .models import User
+from .models.user import User
 from werkzeug.security import check_password_hash
 
 
