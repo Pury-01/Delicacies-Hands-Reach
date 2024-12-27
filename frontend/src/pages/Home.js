@@ -20,10 +20,10 @@ const Home = () => {
 
     // hook to perform search when query or page changes
     useEffect(() => {
-        if (query) {
+        if (query && !searchPerformed) {
            handleSearch(query, currentPage);
         }
-    }, [query, currentPage, handleSearch]); // rerun when there is a change in query or page
+    }, [query, currentPage, handleSearch, searchPerformed]); // rerun when there is a change in query or page
 
     return (
         <div className="container">
@@ -45,6 +45,10 @@ const Home = () => {
                         className='btn btn-secondary'
                         onClick={handlePreviousPage}
                         disabled={currentPage === 1}
+                        style={{
+                          backgroundColor: currentPage > 1 ? 'blue' : 'grey',
+                          color: 'white',
+                        }}
                       >
                         Prev
                       </button>
@@ -53,7 +57,11 @@ const Home = () => {
                       <button
                         className='btn btn-primary'
                         onClick={handleNextPage}
-                        disabled={isLastPage || recipes.lenght < 10}
+                        disabled={isLastPage || recipes.length < 10}
+                        style={{
+                          backgroundColor: !isLastPage ? 'blue' : 'grey',
+                          color: 'white',
+                        }}
                       >
                         Next
                       </button>
