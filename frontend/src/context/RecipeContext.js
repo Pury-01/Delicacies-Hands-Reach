@@ -13,6 +13,7 @@ export const RecipeProvider = ({ children}) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isLastPage, setIsLastPage] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [recipe, setRecipe] = useState(null);
     const limit = 10;
 
     // handle search query and fetch recipes
@@ -58,6 +59,27 @@ export const RecipeProvider = ({ children}) => {
       }
     };
 
+    //  Fetch a single recipe by Id
+    const fetchRecipeById = async (id) => {
+      setLoading(true);
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/recipes/${id}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch recipe');
+        }
+
+        const data = await response.json();
+        //  set single recipe state
+        setRecipe(data);
+      } catch (error) {
+        console.error('Error getting recipe:', error);
+        // set recipe to null if failed
+        setRecipe(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     // function for handling next page
     const handleNextPage = () => {
       if (!isLastPage) {
@@ -90,6 +112,7 @@ export const RecipeProvider = ({ children}) => {
           handleSearch,
           handleNextPage,
           handlePreviousPage,
+          fetchRecipeById,
         }}
       >
         {children}

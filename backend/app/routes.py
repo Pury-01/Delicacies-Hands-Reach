@@ -110,6 +110,7 @@ async def get_recipes():
         "limit": limit
         })
 
+
 # route to handle user signup
 @bp.route("/signup", methods=['POST'])
 def signup():
@@ -171,42 +172,8 @@ def login():
         "error": "invalid email or password",
         "Signup_url": url_for("main.signup")
                     }), 401 
-
-
-# route to save recipe for user
-@bp.route("/api/save_recipe", methods=['POST'])
-def save_recipe():
-    """Endpoint to save a recipe for a specific user."""
-    # redirect user to login page if not logged in
-    if not session.get('user_id'):
-        return redirect(url_for("main.login"))
     
-    # parse incoming Json request data and extract User Id and recipe ID
-    data = request.get_json()
-    user_id = data.get('user_id')
-    recipe_id = data.get('recipe_id')
 
-    try:
-        # SQL query to insert a new record into saved_recipes table
-        query = "INSERT INTO saved_recipes (user_id, recipe_id) VALUES (%s, %s)"
-        # execute query
-        db.engine.execute(query,  (user_id, recipe_id))
-        return jsonify({'message': 'Recipe saved successfully'}), 201
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
-
-# Route to retrive all saved recipes for a specific user
-@bp.route('/api/saved_recipes', methods=['GET'])
-def get_saved_recipes():
-    user_id = request.arg.get('user_id')
-    try:
-        query = "SELECT recipes.* FROM recipes JOIN saved_recipes ON recipes.id = saved_recipes.recipe_id WHERE saved_recipes.user_id = %s"
-        results = db.engine.execute(query, (user_id,))
-        recipes = [dict(row) for row in results]
-        return jsonify(recipes), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
-    
 # Logout endpoint
 @bp.route("/logout", methods=['POST'])
 def logout():
