@@ -8,7 +8,6 @@ from flask import (
     session, 
     redirect,
     url_for,
-    current_app
 )
 import os
 import requests
@@ -19,6 +18,7 @@ from . import db
 from .models.user import User
 from .models.recipe import Recipe
 from werkzeug.security import check_password_hash
+from functools import wraps
 
 
 # Load environment variables
@@ -28,6 +28,22 @@ load_dotenv()
 bp = Blueprint("main", __name__)
 
 
+# Login decorator to ensure users login to access protected page
+def login_required(func):
+    """Decorator to ensure a user is logged in"""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        """validate users"""
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({"error": "User not logged in", "redirect": "/login"}), 401
+        
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"error": "User does not exist", "redirect": "/signup"}), 404
+        return func(user=user, *args, **kwargs)
+    return wrapper
+    
 # serve react build files
 @bp.route("/", methods=['GET'])
 def Serve_react_app():
@@ -42,6 +58,7 @@ def serve_static_file(path):
     """serve any other static file requested"""
     return send_from_directory(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static', 'static'), path)
 
+# fetch recipes from Spoonacular API
 @bp.route('/api/recipes', methods=['GET'])
 async def get_recipes():
     """endpoint to fetch recipes from Spoonacular API"""
@@ -168,6 +185,104 @@ def login():
         "Signup_url": url_for("main.signup")
                     }), 401 
     
+# protected route for user recipes page
+@bp.route("/user/recipes", methods=['GET'])
+@login_required
+def user_recipes_page(user):
+    """Page where user manage their own recipes"""
+    # fetch user recipes from database
+    recipes = Recipe.query.filter_by(user_id=user.id).all()
+
+    # empty list for users with no recipes
+    if not recipes:
+        return jsonify({
+            "message": "No saved recipes! Add and save your recipes",
+            "recipes": []
+        })
+
+    # Return user recipes
+    recipe_list = [
+        {
+            "id": recipe.id,
+            "title": recipe.title,
+            "ingredients": recipe.ingredients,
+            "steps": recipe.steps
+        } for recipe in recipes
+    ]
+
+    return jsonify({
+        "recipes": recipe_list
+    })
+
+# user adds new recipe
+@bp.route("/user/recipe", methods=['POST'])
+@login_required
+def add_recipe(user):
+    """Endpoint to add recipe"""
+    # Get data from the request
+    data = request.get_json()
+    recipe = Recipe(
+        title = data.get('title'),
+        ingredients = data.get('ingredients'),
+        steps = data.get('steps'),
+        user_id = user.id
+    )
+    # save to db
+    db.session.add(recipe)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Recipe added successfully",
+        "recipe": {
+            "id": recipe.id,
+            "title": recipe.title,
+            "ingredients": recipe.ingredients,
+            "steps": recipe.steps
+        }
+    }), 201
+
+# update or edit recipe
+@bp.route("/user/recipes/<int:recipe_id>", methods=['PUT'])
+@login_required
+def edit_recipe(user, recipe_id):
+    """Endpoint to edit an existing recipe"""
+    recipe = Recipe.query.get(recipe_id)
+    if not recipe or recipe.user_id != user.id:
+        return jsonify({"error": "Recipe not found"}), 404
+
+    data = request.get_json()
+    recipe.title = data.get('title', recipe.title)
+    recipe.ingredients = data.get('ingredients', recipe.ingredients)
+    recipe.steps = data.get('steps', recipe.steps)
+
+    # save update to db
+    db.session.commit()
+
+    return jsonify({
+        "message": "Recipe updated successfully",
+        "recipe": {
+            "id": recipe.id,
+            "title": recipe.title,
+            "ingredients": recipe.ingredients,
+            "steps": recipe.steps
+        }
+    })    
+
+# delete a recipe
+@bp.route("/user/recipes/<int:recipe_id>", methods=['DELETE'])
+@login_required
+def delete_recipe(user, recipe_id):
+    """Endpoint to delete a recipe"""
+    recipe = Recipe.query.get(recipe_id)
+    if not recipe or recipe.user_id != user.id:
+        return jsonify({"error": "Recipe not found"})
+
+    # delete recipe and update the db
+    db.session.delete(recipe)
+    db.session.commit()
+
+    return jsonify({"message": "Recipe deleted successfully!"})
+
 
 # Logout endpoint
 @bp.route("/logout", methods=['POST'])
