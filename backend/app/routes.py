@@ -17,6 +17,7 @@ import aiohttp
 from dotenv import load_dotenv
 from . import db
 from .models.user import User
+from .models.recipe import Recipe
 from werkzeug.security import check_password_hash
 
 
@@ -48,7 +49,7 @@ async def get_recipes():
     ingredients = request.args.get('query', '')
     # set default  page as page 1 with 10 recipes per page
     page = int(request.args.get('page', 1))
-    limit = min(max(int(request.args.get('limit', 10)), 1), 100)
+    limit = min(max(int(request.args.get('limit', 10)), 1), 30)
     offset = (page - 1) * limit
     
 
@@ -99,8 +100,6 @@ async def get_recipes():
                             ],
                             "steps":  [step['step'] for step in steps]
     })
-                    # print statement for debugging
-                    # print(f"Recipes found: {recipes}")
             
         except requests.exceptions.RequestException as e:
             return jsonify({"error": str(e)}), 500
@@ -138,11 +137,7 @@ def signup():
     # save the user to the database
     db.session.add(user)
     db.session.commit()
-    # print("user saved to DB")
-
-    # return success message
-    # return jsonify({"message": "account created successsfuly"}), 201
-    # redirect to login page after successful signup
+    
     return jsonify({
         "message": "Account created successsfuly",
         # "Login_url": url_for("main.login")

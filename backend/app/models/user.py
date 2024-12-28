@@ -12,7 +12,9 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
 
-    
+    # Relationship to recipes
+    recipes = db.relationship('Recipe', backref='owner', lazy='dynamic')
+
     def __init__(self, username: str, email: str):
         """initialize user object"""
         self.username = username
