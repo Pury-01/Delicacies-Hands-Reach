@@ -3,7 +3,7 @@ import React, { useState} from 'react';
 
 const UserRecipe = () => {
     // state to manage whiteboard mode: readOnly or edit
-    const [whiteboardMode, setWhiteboardMode] = useState('readOnly')
+    const [whiteboardMode, setWhiteboardMode] = useState('readOnly');
     const [recipeContent, setRecipeContent] = useState(
         `Recipe Format:
                                  
@@ -18,15 +18,43 @@ const UserRecipe = () => {
             [Describe the steps]`
     );
 
-    // function to set whiteboard to edit mode when Add Recipe action
+    // state to manage viewing/editing saved recipe
+    const [isSavedRecipe, setIsSavedRecipe] = useState(false);
+
+    // function to handle Add Recipe action
     const handleAddRecipe = () => {
         setWhiteboardMode('edit');
+        setIsSavedRecipe(false);
+        setRecipeContent('');
     };
+
+    // function to handle editing of saved recipe
+    const handleEditSavedRecipe = () => {
+        setWhiteboardMode('edit');
+        setIsSavedRecipe(true);
+    };
+
     
     // function to handle input change for editing recipe
     const handleRecipeContentChange = (event) => {
         setRecipeContent(event.target.value)
     };
+
+    // function to handle save action
+    const handleSaveRecipe =() => {
+        alert('Recipe saved!');
+        setWhiteboardMode('readonly');
+        setIsSavedRecipe(true);
+    };
+
+    // function to handle delete action
+    const handleDeleteRecipe = () => {
+        alert('Recipe deleted!');
+        setRecipeContent('');
+        setWhiteboardMode('readOnly');
+        setIsSavedRecipe(false);
+    };
+    
 
     return (
         <div className='container-fluid vh-100'>
@@ -51,6 +79,7 @@ const UserRecipe = () => {
                     {/*add recipe button */}
                     <button className='btn btn-primary mb-4 w-75' onClick={handleAddRecipe}>+ Add Recipe</button>
 
+                    {/* saved recipes */}
                     <div className='w-100 px-3'>
                         <p className='text-muted mb-2 fs-6'>
                             Saved Recipes
@@ -59,6 +88,7 @@ const UserRecipe = () => {
                         <div
                             className='bg-white border rounded px-2 py-1'
                             style={{ cursor: "pointer" }}
+                            onClick={handleEditSavedRecipe}
                         >
                             Click to view Recipes
                         </div>
@@ -78,7 +108,19 @@ const UserRecipe = () => {
                             readOnly={whiteboardMode === 'readOnly'}
                         ></textarea>
                     </div>
-                </div>
+
+                    {/* Action buttons for editing and saving */}
+                    {whiteboardMode === 'edit' && (
+                        <div className='mt-4 d-flex justify-content-between'>
+                            <button className='btn btn-success' onClick={handleSaveRecipe}>
+                               Save
+                            </button>
+                            <button className='btn btn-danger ms-2' on onClick={handleDeleteRecipe}>
+                                Delete
+                            </button>
+                      </div>
+                    )}
+                    </div>
             </div>
         </div>
     );
