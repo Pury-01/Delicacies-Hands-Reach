@@ -25,8 +25,6 @@ function SearchBar({ onSearch }) {
                       // placeholder message
                       placeholder="Input ingredients to search..."
                     />
-                  </form>
-                </div>
 
                 {/* Search button */}
                 <div className='d-flex justify-content-between align-items-center'>
@@ -36,6 +34,8 @@ function SearchBar({ onSearch }) {
                   <a href="/" className='home-link' style={{fontSize: "18px", marginBottom: "10px", color: "#28a745"}}>
                     <i className='bi bi-house-door-fill'></i> Home
                   </a>
+                </div>
+                </form>
                 </div>
     </div>
     );
