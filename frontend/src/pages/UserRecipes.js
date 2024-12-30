@@ -1,7 +1,33 @@
 // page where users can create and manage their own recipes
-import React from 'react';
+import React, { useState} from 'react';
 
 const UserRecipe = () => {
+    // state to manage whiteboard mode: readOnly or edit
+    const [whiteboardMode, setWhiteboardMode] = useState('readOnly')
+    const [recipeContent, setRecipeContent] = useState(
+        `Recipe Format:
+                                 
+         1. Recipe Title:
+            [Enter the recipe name]
+                                 
+         2. Ingredients:
+            [List the Ingredients]
+                                
+                                
+         3. Steps:
+            [Describe the steps]`
+    );
+
+    // function to set whiteboard to edit mode when Add Recipe action
+    const handleAddRecipe = () => {
+        setWhiteboardMode('edit');
+    };
+    
+    // function to handle input change for editing recipe
+    const handleRecipeContentChange = (event) => {
+        setRecipeContent(event.target.value)
+    };
+
     return (
         <div className='container-fluid vh-100'>
             <h5 className='display text-center'>My Recipes</h5>
@@ -23,7 +49,7 @@ const UserRecipe = () => {
                     </div>
 
                     {/*add recipe button */}
-                    <button className='btn btn-primary mb-4 w-75'>+ Add Recipe</button>
+                    <button className='btn btn-primary mb-4 w-75' onClick={handleAddRecipe}>+ Add Recipe</button>
 
                     <div className='w-100 px-3'>
                         <p className='text-muted mb-2 fs-6'>
@@ -44,23 +70,12 @@ const UserRecipe = () => {
                     <div className='form-group'>
                         <textarea
                             className='form-control'
-                            placeholder={`
-                                      Recipe Format:
-                                 
-                                 1. Recipe Title:
-                                    [Enter the recipe name]
-                                 
-                                 
-                                 2. Ingredients:
-                                    [List the Ingredients]
-                                
-                                
-                                 3. Steps:
-                                    [Describe the steps]
-                                    
-                                    `}
+                            placeholder={whiteboardMode === 'readOnly' ? recipeContent : ''}
+                            value={whiteboardMode === 'edit' ? recipeContent : ''}
+                            onChange={handleRecipeContentChange}
                             rows="20"
                             style={{ fontFamily: 'Times New Roman', fontSize: '16px' }}
+                            readOnly={whiteboardMode === 'readOnly'}
                         ></textarea>
                     </div>
                 </div>
