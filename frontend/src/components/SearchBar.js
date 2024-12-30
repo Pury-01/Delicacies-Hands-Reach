@@ -13,20 +13,31 @@ function SearchBar({ onSearch }) {
     };
     
     return (
-        <div className="form=group">
-        <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              className="form-control"
-              value={query}
-              // update state as user inputs
-              onChange={(e) => setQuery(e.target.value)}
-              // placeholder message
-              placeholder="Input ingredients to search..."
-              />
-              <button type="submit" className="btn btn-primary mt-3">Search</button>
-        </form>
-        </div>
+        <div className="container">
+            <div className='form-group mb-2'>
+                <form onSubmit={handleSubmit}>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={query}
+                      // update state as user inputs
+                      onChange={(e) => setQuery(e.target.value)}
+                      // placeholder message
+                      placeholder="Input ingredients to search..."
+                    />
+                  </form>
+                </div>
+
+                {/* Search button */}
+                <div className='d-flex justify-content-between align-items-center'>
+                  <button type="submit" className='btn btn-primary mt-3'>Search</button>
+
+                  {/* home link */}
+                  <a href="/" className='home-link' style={{fontSize: "18px", marginBottom: "10px", color: "#28a745"}}>
+                    <i className='bi bi-house-door-fill'></i> Home
+                  </a>
+                </div>
+    </div>
     );
 }
 

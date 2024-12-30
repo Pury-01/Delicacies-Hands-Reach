@@ -58,6 +58,12 @@ def serve_static_file(path):
     """serve any other static file requested"""
     return send_from_directory(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static', 'static'), path)
 
+# home route
+@bp.route('/home', methods=['GET'])
+def home():
+    """Home page"""
+    return 
+
 # fetch recipes from Spoonacular API
 @bp.route('/api/recipes', methods=['GET'])
 async def get_recipes():

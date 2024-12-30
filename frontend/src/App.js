@@ -4,9 +4,10 @@ import Home from './pages/Home';
 import Signup from './pages/SignUp';
 import Login from './pages/LoginPage';
 import RecipeCard from './pages/RecipeCard';
-import UserRecipes from './pages/UserRecipes'
+import UserRecipes from './pages/UserRecipes';
+import LandingPage from './pages/LandingPage';
 
-function App() {
+const App = () => {
   return (
     // Render the app
       <Router>
@@ -14,7 +15,8 @@ function App() {
           <h4 className="my-3" style={{fontStyle: 'italic'}}>Delicacies@Hands-Reach</h4>
           <Routes>
             {/* routes for each page */}
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />}  />
             <Route path="/recipe/:id" element={<RecipeCard />} />

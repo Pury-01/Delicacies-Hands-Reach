@@ -29,6 +29,9 @@ const Home = () => {
         <div className="container">
             {/* SearchBar to  input search query */}
             <SearchBar onSearch={handleSearch} setQuery={setQuery} />
+             <div className='d-flex justify-content-between'>
+              
+            </div>
 
             {/* Display search results */}
             {searchPerformed && (
