@@ -6,7 +6,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [isLoading, setIsLoading] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     // navigation
     const navigate = useNavigate();
@@ -23,8 +23,6 @@ const Login = () => {
         setErrorMessage('');
         setIsLoading(true);
 
-        // create request
-        const requestData = {email, password}
         try {
             // send post request to login endpoint
             const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
@@ -32,7 +30,8 @@ const Login = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(requestData),
+                body: JSON.stringify({ email, password }),
+                credentials: 'include',
             });
 
             // check if response was successful and redirect to homepage
@@ -40,11 +39,13 @@ const Login = () => {
                 const result = await response.json();
                 navigate(result.redirect_url);
             } else {
-                const results = await response.json()
-                setErrorMessage(results.error);
+                const results = await response.json();
+                setErrorMessage(results.error || 'Invalid email or password');
             }
         } catch (error) {
-            setErrorMessage('Error! Invalid email or password')
+            setErrorMessage('Unable to login, please try again');
+        } finally {
+            setIsLoading(false);
         }
     };
     return (
@@ -86,15 +87,9 @@ const Login = () => {
                         </div>
                         {/* error Message */}
                         {errorMessage && <div className='alert alert-danger'>{errorMessage}</div>}
-
-                        {/* Loading state */}
-                        {isLoading ? (
-                            <div className='text-center'>Logging in...</div>
-                        ) : (
-                            <button type='submit' className='btn btn-primary w-100'>
-                              Login
-                            </button>
-                         )}
+                        <button type='submit' className='btn btn-primary w-100' disabled={isLoading}>
+                                {isLoading ? 'Logging in...' : 'Login'}
+                        </button>
                     </form>
                     {/* Link to Signup */}
                     <p className='mt-3 text-center'>

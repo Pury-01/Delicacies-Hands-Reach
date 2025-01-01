@@ -21,7 +21,7 @@ def create_app():
     app = Flask(__name__, static_folder=os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static/static')) 
     
     # allow cross origin requests
-    CORS(app)
+    CORS(app, supports_credentials=True, origins=['http://localhost:3000'])
     
     # Load configuration
     app.config.from_object(Config)

@@ -1,5 +1,6 @@
 // page where users can create and manage their own recipes
 import React, { useEffect, useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const UserRecipe = () => {
     // state to manage recipe details
@@ -15,27 +16,33 @@ const UserRecipe = () => {
     const [savedRecipes, setSavedRecipes] = useState([]);
     const [selectedRecipe, setSelectedRecipe] = useState(null);
 
+    // navigation
+    const navigate = useNavigate();
+
     // function to fetch saved recipes
     const fetchSavedRecipes = async () => {
-        const response = await fetch('/user/recipes', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/user/recipes`, {
+            credentials: 'include',
+            });
 
-        const data = await response.json();
-        if (data.recipes) {
-            setSavedRecipes(data.recipes);
-        } else {
-            console.log('Error fetching recipes:', data.message)
+            if (response.ok) {
+                // if authenticated fetch saved recipes
+                const data = await response.json();
+                setSavedRecipes(data.recipes || []);
+            } else if (response.status === 401) {
+                navigate('/login');
+            }
+        } catch (err) {
+            console.error('Error fetching saved recipes:', err)
+            navigate('/login');
         }
     };
 
-    // fetch saved recipes
+    // call fetchSavedRecipes on page load
     useEffect(() => {
         fetchSavedRecipes();
-    }, []);
+    }, [navigate]);
 
     // function to handle Add Recipe action
     const handleAddRecipe = () => {
@@ -64,17 +71,17 @@ const UserRecipe = () => {
         
         try {
             const endpoint = isSavedRecipe
-                ? `/user/recipes${selectedRecipe.id}`
-                : '/user/recipe'
+                ? `${process.env.REACT_APP_API_URL}/user/recipes${selectedRecipe.id}`
+                : `${process.env.REACT_APP_API_URL}/user/recipe`
             const method = isSavedRecipe ? 'PUT' : 'POST';
 
             const response = await fetch(endpoint, {
                     method: method,
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
                     },
-                    body: JSON.stringify(newRecipe)
+                    body: JSON.stringify(newRecipe),
+                    credentials: 'include',
                 });
 
                 if (response.ok) {
@@ -82,8 +89,8 @@ const UserRecipe = () => {
                     fetchSavedRecipes();
                     setWhiteboardMode('readOnly');
                 } else {
-                    const errorData = await response.json()
-                    alert(`Failed to save recipe: ${errorData.message}`);
+                    const data = await response.json();
+                    alert(data.message);
                 } 
         } catch (err) {
             console.error('Error saving recipe:', err)
@@ -97,10 +104,9 @@ const UserRecipe = () => {
         try {
             const response = await fetch(`/user/recipes/${selectedRecipe.id}`, {
                 method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                },
+                credentials: 'include',
             });
+
         if (response.ok) {
             alert('Recipe deleted!');
             fetchSavedRecipes();
@@ -114,7 +120,23 @@ const UserRecipe = () => {
     } catch (err) {
         console.error('Error deleting recipe:', err)
     }
-    };
+};
+
+// logout function
+const handleLogout = async () => {
+    try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/logout`, {
+            method: 'POST',
+            credentials: 'include',
+        });
+        if (response.ok) {
+            alert('Logged out successfully!');
+            navigate('/login');
+        }
+    } catch (err) {
+        console.error('Error logging out:', err)
+    }
+}
 
     return (
         <div className='container-fluid vh-100'>
@@ -163,6 +185,13 @@ const UserRecipe = () => {
                         ))}
                     
                     </div>
+
+                    {/* logout button */}
+                    <button className='btn btn-secondary mt-4 w-75'
+                    onClick={handleLogout}
+                    >
+                        Logout
+                    </button>
                 </nav>
                 {/* work area */}
                 <div className='col-9  bg-white p-4'>

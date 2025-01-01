@@ -40,6 +40,7 @@ def login_required(func):
         
         user = User.query.get(user_id)
         if not user:
+            session.clear()
             return jsonify({"error": "User does not exist", "redirect": "/signup"}), 404
         return func(user=user, *args, **kwargs)
     return wrapper
@@ -170,7 +171,7 @@ def signup():
 def login():
     """user login"""
     # if user is already logged in, redirect to the homepage
-    if session.get('user_id'):
+    if 'user_id' in session:
         return jsonify({"message": "Already logged in", "redirect_url": "/"}), 200
     
     # get data from request
@@ -184,7 +185,8 @@ def login():
     if user and check_password_hash(user.password_hash, password):
         # store user ID in session to maintain login state
         session['user_id'] = user.id
-        return jsonify({"message": "Login successful", "redirect_url": "/"}), 200
+        print(f"Session set: {session}")
+        return jsonify({"message": "Login successful", "redirect_url": "/user/recipes"}), 200
 
     return jsonify({
         "error": "invalid email or password",
@@ -225,6 +227,7 @@ def user_recipes_page(user):
 @login_required
 def add_recipe(user):
     """Endpoint to add recipe"""
+    print(request.headers.get('Authorization'))
     # Get data from the request
     data = request.get_json()
     recipe = Recipe(
