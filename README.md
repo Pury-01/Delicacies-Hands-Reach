@@ -96,6 +96,7 @@ DB_NAME=db_name
 DB_HOST=db_host
 DB_USER=db_user
 DB_PASSWORD=db_password
+DB_PORT=3306
 ```
 
 ### Frontend
@@ -116,13 +117,13 @@ REACT_APP_API_URL=http://127.0.0.1:5000
 
 ### Recipes
 
-| Method   | Endpoints         | Description               |
-|----------|-------------------|---------------------------|
-| GET      | /recipes          | Fetch recipes from API    |
-| GET      | /user/recipes     | Get saved recipes         | 
-| POST     | /user/recipe      | Add a new recipe          |
-| PUT      | /user/recipes/<id>| Update an exisiting recipe|
-| DELETE   | /user/recipes/<id>| Delete a recipe           |
+| Method   | Endpoints                    | Description               |
+|----------|------------------------------|---------------------------|
+| GET      | /recipes                     | Fetch recipes from API    |
+| GET      | /user/recipes                | Get saved recipes         | 
+| POST     | /user/recipe                 | Add a new recipe          |
+| PUT      | /user/recipes/<int:recipe_id>| Update an exisiting recipe|
+| DELETE   | /user/recipes/<int:recipe_id>| Delete a recipe           |
 
 ## Frontend Pages and Components
 

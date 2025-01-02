@@ -11,8 +11,6 @@ const App = () => {
   return (
     // Render the app
       <Router>
-        <div className="container">
-          <h4 className="my-3" style={{fontStyle: 'italic'}}>Delicacies@Hands-Reach</h4>
           <Routes>
             {/* routes for each page */}
             <Route path="/" element={<LandingPage />} />
@@ -22,7 +20,6 @@ const App = () => {
             <Route path="/recipe/:id" element={<RecipeCard />} />
             <Route path="/user/recipes" element={<UserRecipes />} />
             </Routes>
-        </div>
       </Router>
   );
 }
