@@ -26,15 +26,13 @@ const Home = () => {
     }, [query, currentPage, handleSearch, searchPerformed]); // rerun when there is a change in query or page
 
     return (
-        <div className="container">
+      <div className="container mt-5">
             {/* SearchBar to  input search query */}
-            <SearchBar onSearch={handleSearch} setQuery={setQuery} />
-             <div className='d-flex justify-content-between'>
-              
+            <div className="mt-4">
+                <SearchBar onSearch={handleSearch} setQuery={setQuery} />
             </div>
-
             {/* Display search results */}
-            {searchPerformed && (
+           {searchPerformed && (
                 <div>
                     <h3 className="my-4">Results</h3>
 
