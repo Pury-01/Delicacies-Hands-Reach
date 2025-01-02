@@ -112,7 +112,7 @@ REACT_APP_API_URL=http://127.0.0.1:5000
 | POST     | /signup         | register a new user.      |
 | POST     | /login          | login an existing user.   |
 | POST     | /logout         | log out the current user. |
-|----------|-----------------|---------------------------|
+
 
 ### Recipes
 
@@ -123,7 +123,6 @@ REACT_APP_API_URL=http://127.0.0.1:5000
 | POST     | /user/recipe      | Add a new recipe          |
 | PUT      | /user/recipes/<id>| Update an exisiting recipe|
 | DELETE   | /user/recipes/<id>| Delete a recipe           |
-|----------|-------------------|---------------------------|
 
 ## Frontend Pages and Components
 
