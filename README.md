@@ -53,7 +53,7 @@ python3.7 -m venv venv
 source venv/bin/activate
 ```
 
-3. Istall dependencies:
+3. Install dependencies:
 ```
 pip install -r requirements.txt
 ```
@@ -106,24 +106,24 @@ REACT_APP_API_URL=http://127.0.0.1:5000
 
 ## Backend Endpoints
 ### Authentication
-+----------+-----------------+---------------------------+
+
 | Methods  | Endpoints       | Description               |
-+----------+-----------------+---------------------------+
+|----------|-----------------|---------------------------|
 | POST     | /signup         | register a new user.      |
 | POST     | /login          | login an existing user.   |
 | POST     | /logout         | log out the current user. |
-+----------+-----------------+---------------------------+
+|----------|-----------------|---------------------------|
 
 ### Recipes
-+----------+-------------------+---------------------------+
+
 | Method   | Endpoints         | Description               |
-+----------+-------------------+---------------------------+
+|----------|-------------------|---------------------------|
 | GET      | /recipes          | Fetch recipes from API    |
 | GET      | /user/recipes     | Get saved recipes         | 
 | POST     | /user/recipe      | Add a new recipe          |
 | PUT      | /user/recipes/<id>| Update an exisiting recipe|
 | DELETE   | /user/recipes/<id>| Delete a recipe           |
-+----------+-----------------+-----------------------------+
+|----------|-------------------|---------------------------|
 
 ## Frontend Pages and Components
 
