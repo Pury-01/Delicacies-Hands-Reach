@@ -60,7 +60,9 @@ const LandingPage = () => {
                 <div className='row'>
                     <div className='col-md-6 mb-4'>
                         <h2 className='fw-bold'>About Us</h2>
-                        <p>Delicacies@Hands-Reach is your go-to platform for discovering delicious recipes from around the world. Powered by Spoonacular API, we aim to make cooking enjoyable and easy for everyone. </p>
+                        <p>Delicacies@Hands-Reach is your go-to platform for discovering delicious recipes from around the world. Powered by Spoonacular API, we aim to make cooking enjoyable and easy for everyone.
+                            Also you can create and manage your own recipes. 
+                        </p>
                     </div>
                 </div>
                 

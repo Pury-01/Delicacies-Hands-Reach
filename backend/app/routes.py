@@ -28,7 +28,7 @@ load_dotenv()
 bp = Blueprint("main", __name__)
 
 
-# Login decorator to ensure users login to access protected page
+#Login decorator to ensure users login to access protected page
 def login_required(func):
     """Decorator to ensure a user is logged in"""
     @wraps(func)
@@ -45,6 +45,8 @@ def login_required(func):
         return func(user=user, *args, **kwargs)
     return wrapper
     
+
+
 # serve react build files
 @bp.route("/", methods=['GET'])
 def Serve_react_app():
@@ -171,8 +173,9 @@ def signup():
 def login():
     """user login"""
     # if user is already logged in, redirect to the homepage
+    print("Login attempt recieved")
     if 'user_id' in session:
-        return jsonify({"message": "Already logged in", "redirect_url": "/"}), 200
+        return jsonify({"message": "Already logged in", "redirect_url": "/user/recipes"}), 200
     
     # get data from request
     data = request.get_json()
@@ -183,10 +186,17 @@ def login():
     user = User.query.filter_by(email=email).first()
 
     if user and check_password_hash(user.password_hash, password):
+        session.clear()
         # store user ID in session to maintain login state
+        session.permanent = True
         session['user_id'] = user.id
-        print(f"Session set: {session}")
-        return jsonify({"message": "Login successful", "redirect_url": "/user/recipes"}), 200
+        print(f"Session afer login: {session}")
+
+        response = jsonify({
+            "message": "Login successful",
+            "redirect_url": "/user/recipes"
+        })
+        return response, 200
 
     return jsonify({
         "error": "invalid email or password",
@@ -226,15 +236,15 @@ def user_recipes_page(user):
 @bp.route("/user/recipe", methods=['POST'])
 @login_required
 def add_recipe(user):
-    """Endpoint to add recipe"""
-    print(request.headers.get('Authorization'))
+    """Endpoint to add a new recipe"""
     # Get data from the request
     data = request.get_json()
+
     recipe = Recipe(
         title = data.get('title'),
         ingredients = data.get('ingredients'),
         steps = data.get('steps'),
-        user_id = user.id
+         user_id = user.id
     )
     # save to db
     db.session.add(recipe)
@@ -256,6 +266,7 @@ def add_recipe(user):
 def edit_recipe(user, recipe_id):
     """Endpoint to edit an existing recipe"""
     recipe = Recipe.query.get(recipe_id)
+
     if not recipe or recipe.user_id != user.id:
         return jsonify({"error": "Recipe not found"}), 404
 
@@ -283,6 +294,7 @@ def edit_recipe(user, recipe_id):
 def delete_recipe(user, recipe_id):
     """Endpoint to delete a recipe"""
     recipe = Recipe.query.get(recipe_id)
+
     if not recipe or recipe.user_id != user.id:
         return jsonify({"error": "Recipe not found"})
 

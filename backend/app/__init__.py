@@ -6,6 +6,7 @@ import os
 from flask_migrate import Migrate
 from .config import Config
 from flask_cors import CORS
+import logging
 
 
 # initialize SQLAlchemy
@@ -21,10 +22,19 @@ def create_app():
     app = Flask(__name__, static_folder=os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static/static')) 
     
     # allow cross origin requests
-    CORS(app, supports_credentials=True, origins=['http://localhost:3000'])
-    
+    CORS(app,
+         resources={r"/*": {
+            "supports_credentials": True,
+            "origins": ['http://localhost:3000'],
+            "allow_headers" : ['Content-Type', 'Authorization'],
+            "expose_headers": ['Set-Cookie'],
+            "methods": ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+          }})
     # Load configuration
     app.config.from_object(Config)
+
+    # set up logging
+    logging.basicConfig(level=logging.DEBUG)
     
     # initialize database
     db.init_app(app)

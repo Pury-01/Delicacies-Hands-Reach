@@ -23,16 +23,21 @@ const UserRecipe = () => {
     const fetchSavedRecipes = async () => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/user/recipes`, {
-            credentials: 'include',
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                   'Content-Type': 'application/json',
+                }
             });
 
             if (response.ok) {
                 // if authenticated fetch saved recipes
                 const data = await response.json();
                 setSavedRecipes(data.recipes || []);
-            } else if (response.status === 401) {
+            }  else if (response.status === 401) {
                 navigate('/login');
-            }
+                //console.log('Not authenticated, please login first!')
+             }
         } catch (err) {
             console.error('Error fetching saved recipes:', err)
             navigate('/login');
@@ -42,7 +47,7 @@ const UserRecipe = () => {
     // call fetchSavedRecipes on page load
     useEffect(() => {
         fetchSavedRecipes();
-    }, [navigate]);
+    }, []);
 
     // function to handle Add Recipe action
     const handleAddRecipe = () => {
@@ -71,7 +76,7 @@ const UserRecipe = () => {
         
         try {
             const endpoint = isSavedRecipe
-                ? `${process.env.REACT_APP_API_URL}/user/recipes${selectedRecipe.id}`
+                ? `${process.env.REACT_APP_API_URL}/user/recipes/${selectedRecipe.id}`
                 : `${process.env.REACT_APP_API_URL}/user/recipe`
             const method = isSavedRecipe ? 'PUT' : 'POST';
 
@@ -131,7 +136,7 @@ const handleLogout = async () => {
         });
         if (response.ok) {
             alert('Logged out successfully!');
-            navigate('/login');
+            navigate('/');
         }
     } catch (err) {
         console.error('Error logging out:', err)
@@ -187,7 +192,7 @@ const handleLogout = async () => {
                     </div>
 
                     {/* logout button */}
-                    <button className='btn btn-secondary mt-4 w-75'
+                    <button className='btn btn-secondary mt-5 w-75'
                     onClick={handleLogout}
                     >
                         Logout

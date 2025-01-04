@@ -37,12 +37,14 @@ const Login = () => {
             // check if response was successful and redirect to homepage
             if (response.ok) {
                 const result = await response.json();
+                console.log('Login successful:, redirecting to:', result.redirect_url);
                 navigate(result.redirect_url);
             } else {
                 const results = await response.json();
                 setErrorMessage(results.error || 'Invalid email or password');
             }
         } catch (error) {
+            console.log('Login error:', error);
             setErrorMessage('Unable to login, please try again');
         } finally {
             setIsLoading(false);

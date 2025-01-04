@@ -122,8 +122,8 @@ REACT_APP_API_URL=http://127.0.0.1:5000
 | GET      | /recipes                     | Fetch recipes from API    |
 | GET      | /user/recipes                | Get saved recipes         | 
 | POST     | /user/recipe                 | Add a new recipe          |
-| PUT      | /user/recipes/<int:recipe_id>| Update an exisiting recipe|
-| DELETE   | /user/recipes/<int:recipe_id>| Delete a recipe           |
+| PUT      | /user/recipes/{recipeId}     | Update an exisiting recipe|
+| DELETE   | /user/recipes/{recipeId}     | Delete a recipe           |
 
 ## Frontend Pages and Components
 
