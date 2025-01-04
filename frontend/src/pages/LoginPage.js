@@ -31,14 +31,19 @@ const Login = () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ email, password }),
-                credentials: 'include',
             });
 
             // check if response was successful and redirect to homepage
             if (response.ok) {
                 const result = await response.json();
-                console.log('Login successful:, redirecting to:', result.redirect_url);
-                navigate(result.redirect_url);
+                // console.log('Login successful:, redirecting to:', result.redirect_url);
+                const token = data.access_token;
+
+                //store token in localStorage
+                localStorage.setItem('token', token);
+
+                // redirect user
+                navigate('/user/recipes');
             } else {
                 const results = await response.json();
                 setErrorMessage(results.error || 'Invalid email or password');

@@ -19,7 +19,8 @@ from .models.user import User
 from .models.recipe import Recipe
 from werkzeug.security import check_password_hash
 from functools import wraps
-
+from .utils.jwt_utils import create_jwt, verify_jwt
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 # Load environment variables
 load_dotenv()
@@ -29,11 +30,11 @@ bp = Blueprint("main", __name__)
 
 
 #Login decorator to ensure users login to access protected page
-def login_required(func):
-    """Decorator to ensure a user is logged in"""
+# def login_required(func):
+"""Decorator to ensure a user is logged in
     @wraps(func)
     def wrapper(*args, **kwargs):
-        """validate users"""
+        validate users
         user_id = session.get('user_id')
         if not user_id:
             return jsonify({"error": "User not logged in", "redirect": "/login"}), 401
@@ -44,6 +45,7 @@ def login_required(func):
             return jsonify({"error": "User does not exist", "redirect": "/signup"}), 404
         return func(user=user, *args, **kwargs)
     return wrapper
+"""
     
 
 
@@ -174,8 +176,8 @@ def login():
     """user login"""
     # if user is already logged in, redirect to the homepage
     print("Login attempt recieved")
-    if 'user_id' in session:
-        return jsonify({"message": "Already logged in", "redirect_url": "/user/recipes"}), 200
+    #if 'user_id' in session:
+     #   return jsonify({"message": "Already logged in", "redirect_url": "/user/recipes"}), 200
     
     # get data from request
     data = request.get_json()
@@ -186,15 +188,17 @@ def login():
     user = User.query.filter_by(email=email).first()
 
     if user and check_password_hash(user.password_hash, password):
-        session.clear()
+       # session.clear()
         # store user ID in session to maintain login state
-        session.permanent = True
-        session['user_id'] = user.id
-        print(f"Session afer login: {session}")
+        # session.permanent = True
+        # session['user_id'] = user.id
+        # print(f"Session afer login: {session}")
+        access_token = create_access_token(identity=user.id)
 
         response = jsonify({
             "message": "Login successful",
-            "redirect_url": "/user/recipes"
+            "access_token": access_token
+            #"redirect_url": "/user/recipes"
         })
         return response, 200
 
@@ -205,11 +209,13 @@ def login():
     
 # protected route for user recipes page
 @bp.route("/user/recipes", methods=['GET'])
-@login_required
+@jwt_required()
 def user_recipes_page(user):
     """Page where user manage their own recipes"""
+    current_user_id = get_jwt_identity()
     # fetch user recipes from database
-    recipes = Recipe.query.filter_by(user_id=user.id).all()
+
+    recipes = Recipe.query.filter_by(user_id=current_user_id).all()
 
     # empty list for users with no recipes
     if not recipes:

@@ -24,9 +24,9 @@ const UserRecipe = () => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/user/recipes`, {
                 method: 'GET',
-                credentials: 'include',
                 headers: {
                    'Content-Type': 'application/json',
+                   'Authorization': `Bearer ${token}`
                 }
             });
 
@@ -34,6 +34,7 @@ const UserRecipe = () => {
                 // if authenticated fetch saved recipes
                 const data = await response.json();
                 setSavedRecipes(data.recipes || []);
+                
             }  else if (response.status === 401) {
                 navigate('/login');
                 //console.log('Not authenticated, please login first!')

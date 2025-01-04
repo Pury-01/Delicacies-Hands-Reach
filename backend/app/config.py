@@ -5,6 +5,7 @@ import secrets
 from dotenv import load_dotenv
 from datetime import timedelta
 import tempfile
+from flask_jwt_extended import JWTManager
 
 
 load_dotenv()
@@ -27,13 +28,20 @@ class Config:
 
     # Session configurations
 
-    SESSION_FILE_DIR = '/tmp/flask_session' # store session files 
-    SESSION_COOKIE_DOMAIN = None
-    SESSION_COOKIE_NAME = 'session'
-    SESSION_COOKIE_SECURE = False # True if os.getenv('FLASK_ENV') == 'production' else False
-    SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = 'Lax'
-    SESSION_TYPE = 'filesystem'
-    SESSION_PERMANENT = True
-    PERMANENT_SESSION_LIFETIME = timedelta(days=1)
-    SESSION_COOKIE_PATH = '/'
+    # SESSION_FILE_DIR = '/tmp/flask_session' # store session files 
+    # SESSION_COOKIE_DOMAIN = None
+    # SESSION_COOKIE_NAME = 'session'
+    # SESSION_COOKIE_SECURE = False # True if os.getenv('FLASK_ENV') == 'production' else False
+    # SESSION_COOKIE_HTTPONLY = True
+    # SESSION_COOKIE_SAMESITE = 'Lax'
+    # SESSION_TYPE = 'filesystem'
+    # SESSION_PERMANENT = True
+    # PERMANENT_SESSION_LIFETIME = timedelta(days=1)
+    # SESSION_COOKIE_PATH = '/'
+
+    # JWT configurations
+    jwt = JWTManager()
+
+    JWT_TOKEN_LOCATION = ['headers']
+    JWT_HEADER_NAME = 'Authorization'
+    JWT_HEADER_TYPE = 'Bearer'
