@@ -38,6 +38,7 @@ const Login = () => {
             if (response.ok) {
                 const result = await response.json();
                 console.log('Login successful:, redirecting to:', result.redirect_url);
+                console.log('success', result);
                 navigate(result.redirect_url);
             } else {
                 const results = await response.json();

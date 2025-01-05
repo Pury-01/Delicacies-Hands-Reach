@@ -35,6 +35,7 @@ const UserRecipe = () => {
                 const data = await response.json();
                 setSavedRecipes(data.recipes || []);
             }  else if (response.status === 401) {
+                console.log('user recipe!', response)
                 navigate('/login');
                 //console.log('Not authenticated, please login first!')
              }

@@ -25,10 +25,14 @@ def create_app():
     CORS(app,
          resources={r"/*": {
             "supports_credentials": True,
-            "origins": ['http://localhost:3000'],
-            "allow_headers" : ['Content-Type', 'Authorization'],
-            "expose_headers": ['Set-Cookie'],
-            "methods": ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+            "origins": [
+                'http://localhost:3000',
+                'http://127.0.0.1:3000'
+            ],
+            "allow_headers": ['Content-Type', 'Authorization', 'Cookie', 'Set-Cookie'],
+            "expose_headers": ['Set-Cookie', 'Cookie'],
+            "methods": ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            "max_age": 3600
           }})
     # Load configuration
     app.config.from_object(Config)

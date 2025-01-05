@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Configuration class"""
 import os
-import secrets
 from dotenv import load_dotenv
 from datetime import timedelta
 import tempfile
@@ -28,11 +27,11 @@ class Config:
     # Session configurations
 
     SESSION_FILE_DIR = '/tmp/flask_session' # store session files 
-    SESSION_COOKIE_DOMAIN = None
+    SESSION_COOKIE_DOMAIN = None  # Allow all subdomains
     SESSION_COOKIE_NAME = 'session'
-    SESSION_COOKIE_SECURE = False # True if os.getenv('FLASK_ENV') == 'production' else False
+    SESSION_COOKIE_SECURE = True  # Required for SameSite=None
     SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_SAMESITE = 'None'  # Must be string 'None', not Python None
     SESSION_TYPE = 'filesystem'
     SESSION_PERMANENT = True
     PERMANENT_SESSION_LIFETIME = timedelta(days=1)
