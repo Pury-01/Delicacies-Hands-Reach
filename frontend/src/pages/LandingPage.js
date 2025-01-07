@@ -6,7 +6,7 @@ const LandingPage = () => {
     return (
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <div className="container">
+                <div className="container-fluid">
                     <button
                         className='navbar-toggler'
                         type='button'

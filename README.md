@@ -110,26 +110,31 @@ REACT_APP_API_URL=http://127.0.0.1:5000
 
 | Methods  | Endpoints       | Description               |
 |----------|-----------------|---------------------------|
-| POST     | /signup         | register a new user.      |
+| POST     | /signup         | register a new user.      | 
 | POST     | /login          | login an existing user.   |
 | POST     | /logout         | log out the current user. |
 
 
 ### Recipes
 
-| Method   | Endpoints                    | Description               |
-|----------|------------------------------|---------------------------|
-| GET      | /recipes                     | Fetch recipes from API    |
-| GET      | /user/recipes                | Get saved recipes         | 
-| POST     | /user/recipe                 | Add a new recipe          |
-| PUT      | /user/recipes/{recipeId}     | Update an exisiting recipe|
-| DELETE   | /user/recipes/{recipeId}     | Delete a recipe           |
+| Method   | Endpoints                    | Description               |  Response                          |
+|----------|------------------------------|---------------------------|------------------------------------|
+| GET      | /api/recipes                 | Fetch recipes from API    |  List of recipes                   |
+| GET      | /user/recipes                | Get saved recipes         |  List of user-saved recipes        |
+| POST     | /user/recipe                 | Add a new recipe          |  details of the newly added recipe |
+| PUT      | /user/recipes/{recipeId}     | Update an exisiting recipe|  updated recipe details            |
+| DELETE   | /user/recipes/{recipeId}     | Delete a recipe           |  success/faillure confirmation     |
+
++ The user-based endpoints are protected and are only accessed by logged in users.
++ Users who try to access these routes which are in 'My Recipes' and are not logged in are redirected to the '/login' handled by the login page.
++ Authentication is session-based and cookies are persisted across requests for protected routes.
+
 
 ## Frontend Pages and Components
 
 + LandingPage: Landing page with navigation options
-+ Home: Displays the search feature and recipes list.
-+ RecipeCard: Displays detailed information about a recipe.
++ Home: Displays the search feature and recipes list returned by Spoonacular API.
++ RecipeCard: Displays detailed information; ingredients, steps and picture; about a recipe.
 + UserRecipe: Lists all saved recipes and options to add, update,  or delete recipes.
 + Login: User login page
 + Signup: User registation page

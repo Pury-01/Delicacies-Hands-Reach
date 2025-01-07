@@ -156,7 +156,7 @@ const handleLogout = async () => {
                     style={{ borderRight: "1px solid #dee2e6 "}}
                 >
                     {/* Home link */}
-                    <div className='d-flex justify-content-between'>
+                    <div className='d-flex justify-content-between mb-4'>
                         <a href='/' className='home-link' style={{ fontSize: '18px', marginBottom: '10px', color: '#28a745'}}>
                             <i className='bi bi-house-door-fill'></i>
                             Home
@@ -167,7 +167,8 @@ const handleLogout = async () => {
                         <div
                           className='rounded-circle bg-secondary'
                           style={{ width: "60px", height: "60px "}}
-                        ></div>
+                        >
+                        </div>
                         <p className='mt-2 text-muted fs-6'>Username</p>
                     </div>
 
@@ -175,20 +176,35 @@ const handleLogout = async () => {
                     <button className='btn btn-primary mb-4 w-75' onClick={handleAddRecipe}>+ Add Recipe</button>
 
                     {/* saved recipes */}
-                    <div className='w-100 px-3'>
-                        <p className='text-muted mb-2 fs-6'>
+                    <div className=' dropdown w-100 px-3'>
+                        <button
+                            className='btn btn-light border dropdown-toggle w-100'
+                            type='button'
+                            id='savedRecipesdropdown'
+                            data-bs-toggle='dropdown'
+                            aria-expanded='false'
+                        >
                             Saved Recipes
-                        </p>
-                        {savedRecipes.map((recipe) =>(
-                            <div
+                        </button>
+                        <ul
+                            className='dropdown-menu w-100'
+                            aria-labelledby='savedRecipesdropdown'
+                        >
+                        {savedRecipes.length > 0 ? (
+                            savedRecipes.map((recipe) =>(
+                            <li
                               key={recipe.id}
-                              className='bg-white border rounded px-2 py-1 mb2'
+                              className='downdrop-item'
                               style={{ cursor: "pointer" }}
                               onClick={() => handleEditSavedRecipe(recipe)}
-                        >
+                            >
                               {recipe.title}
-                            </div>
-                        ))}
+                            </li>
+                        ))
+                    ):(
+                        <li className='downdrop-item text-muted'>No saved recipes</li>
+                    )}
+                        </ul>
                     
                     </div>
 
