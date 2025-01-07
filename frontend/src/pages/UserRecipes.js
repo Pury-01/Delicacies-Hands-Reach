@@ -34,10 +34,12 @@ const UserRecipe = () => {
                 // if authenticated fetch saved recipes
                 const data = await response.json();
                 setSavedRecipes(data.recipes || []);
+                console.log('Saved recipes:', data)
+
             }  else if (response.status === 401) {
                 console.log('user recipe!', response)
                 navigate('/login');
-                //console.log('Not authenticated, please login first!')
+                
              }
         } catch (err) {
             console.error('Error fetching saved recipes:', err)
@@ -70,9 +72,17 @@ const UserRecipe = () => {
         setSteps(recipe.steps);
     };
 
+    // clear whiteboard
+    const clearWhiteboard = () => {
+        setTitle('');
+        setIngredients('');
+        setSteps('');
+        setWhiteboardMode('readOnly');
+    };
+
     // function to handle saving a recipe
     const handleSaveRecipe = async() => {
-        // save if it's a new recipe
+        // save if it's a new recipe or update existing one
         const newRecipe = { title, ingredients, steps };
         
         try {
@@ -94,6 +104,7 @@ const UserRecipe = () => {
                     alert(isSavedRecipe ? 'Recipe updated successfully!' : 'Recipe added successfully!');
                     fetchSavedRecipes();
                     setWhiteboardMode('readOnly');
+                    clearWhiteboard();
                 } else {
                     const data = await response.json();
                     alert(data.message);
@@ -108,17 +119,21 @@ const UserRecipe = () => {
         if (!selectedRecipe) return;
 
         try {
-            const response = await fetch(`/user/recipes/${selectedRecipe.id}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/user/recipes/${selectedRecipe.id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
 
         if (response.ok) {
+            console.log('Recipe deleted successfully!');
             alert('Recipe deleted!');
-            fetchSavedRecipes();
+
+            await fetchSavedRecipes();
             setWhiteboardMode('readOnly');
             setIsSavedRecipe(false);
+            clearWhiteboard();
             setSelectedRecipe(null);
+            console.log('Selected recipe', selectedRecipe)
         } else {
             const errorData = await response.json();
             alert(`Failed to delete recipe: ${errorData.message}`)
@@ -163,7 +178,7 @@ const handleLogout = async () => {
                         </a>
                     </div>
                     {/* profile */}
-                    <div className='mb-4 text-centter'>
+                    <div className='mb-5 text-centter'>
                         <div
                           className='rounded-circle bg-secondary'
                           style={{ width: "60px", height: "60px "}}
@@ -173,7 +188,7 @@ const handleLogout = async () => {
                     </div>
 
                     {/*add recipe button */}
-                    <button className='btn btn-primary mb-4 w-75' onClick={handleAddRecipe}>+ Add Recipe</button>
+                    <button className='btn btn-primary mb-5 w-75' onClick={handleAddRecipe}>+ Add Recipe</button>
 
                     {/* saved recipes */}
                     <div className=' dropdown w-100 px-3'>
@@ -209,7 +224,7 @@ const handleLogout = async () => {
                     </div>
 
                     {/* logout button */}
-                    <button className='btn btn-secondary mt-5 w-75'
+                    <button className='btn btn-secondary mt-auto w-75'
                     onClick={handleLogout}
                     >
                         Logout
