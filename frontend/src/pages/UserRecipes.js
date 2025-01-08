@@ -160,21 +160,22 @@ const handleLogout = async () => {
 }
 
     return (
-        <div className='container-fluid vh-100'>
+        <div className='container-fluid vh-100 bg-light'>
+            {/* heading */}
             <h5 className='display text-center'>My Recipes</h5>
             <p className=' display text-center lead text-muted'>view and manage your favourite recipes!</p>
             {/* full page */}
             <div className='row h-100'>
                 {/* sidebar */}
                 <nav
-                    className='col-3 bg-light d-flex flex-column align-items-center py-4'
+                    className='col-3 bg-light d-flex flex-column align-items-center py-4 border-end'
                     style={{ borderRight: "1px solid #dee2e6 "}}
                 >
                     {/* Home link */}
-                    <div className='d-flex justify-content-between mb-4'>
-                        <a href='/' className='home-link' style={{ fontSize: '18px', marginBottom: '10px', color: '#28a745'}}>
+                    <div className='mb-4'>
+                        <a href='/' className='text-success text-decoration-none d-flex align-items-center' style={{ fontSize: '18px', marginBottom: '10px', color: '#28a745'}}>
                             <i className='bi bi-house-door-fill'></i>
-                            Home
+                            <span>Home</span>
                         </a>
                     </div>
                     {/* profile */}
@@ -248,7 +249,7 @@ const handleLogout = async () => {
                             className='form-control'
                             value={ingredients}
                             onChange={(e) => setIngredients(e.target.value)}
-                            rows='10'
+                            rows='5'
                             readOnly={whiteboardMode === 'readOnly'}
                         ></textarea>
 
@@ -257,7 +258,7 @@ const handleLogout = async () => {
                             className='form-control'
                             value={steps}
                             onChange={(e) => setSteps(e.target.value)}
-                            rows='15'
+                            rows='10'
                             readOnly={whiteboardMode === 'readOnly'}
                             ></textarea>
                     </div>
